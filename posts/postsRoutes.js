@@ -79,7 +79,6 @@ router.post('', (req, res) => {
 // });
 
 // Delete requests
-
 router.delete('/:id', (req, res) => {
   const body = req.body
   db.remove(req.params.id)
@@ -92,6 +91,27 @@ router.delete('/:id', (req, res) => {
     console.log(error);
     res.status(500).json({ error: 'The post could not be removed'});
   })
+})
+
+// PUT request
+router.put('/:id', (req, res) => {
+  const changes = req.body;
+  db.update(req.params.id, changes)
+    .then(data => {
+      console.log(data);
+      if (data) {
+        res.status(200).json(changes);
+      }
+      else {
+        res.status(404).json({ message: 'The post with the specified ID does not exist'});
+        res.status(400).json({ errorMessage: 'Please provide title and contents for the post'});
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(400).json({ errorMessage: 'Please provide title and contents for the post'});
+      res.status(500).json({ error: 'The pos information could not be modified'})
+    })
 })
 
 module.exports = router;
